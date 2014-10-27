@@ -1,37 +1,45 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#ash#define() "{{{
+function! unite#sources#ash_review#define()
   return s:source
-endfunction"}}}
+endfunction
 
 let s:source = {
-      \     'name' : 'ash',
+      \     'name' : 'ash_review',
       \     'description' : 'candidates from ash ls',
       \     'syntax' : '',
       \     'hooks' : {},
-      \     'default_kind' : 'ash',
+      \     'default_kind' : 'ash_review',
       \ }
 
-function! s:source.gather_candidates(args, context) "{{{
-    let review = unite#util#input('URL: ')
-    let slist = system("ash " . review . " ls | awk {'print $1\" \"$2'}")
-    let list = split(slist, "\n")
-   
+function! ash_review#ls(url)
+    let url = a:url
+    let plain = system("ash " . url . " ls | awk {'print $1\" \"$2'}")
+    let list = split(plain, "\n")
+
     let candidates = []
 
     for line in list
         let title = line
         let file = substitute(line, "^.* ", "", "")
+
         call add(candidates, {
             \   'word' : title,
             \   'file' : file,
-            \   'review': review,
+            \   'url': url,
             \ })
     endfor
 
     return candidates
-endfunction "}}}
+endfunction
+
+function! s:source.gather_candidates(args, context)
+    let url = unite#util#input('URL: ')
+    let candidates = ash_review#ls(url)
+
+    return candidates
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
