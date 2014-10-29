@@ -10,7 +10,7 @@ let s:source = {
       \     'description' : 'candidates from ash ls',
       \     'syntax' : '',
       \     'hooks' : {},
-      \     'default_kind' : 'ash_review',
+      \     'default_kind' : 'ash_review_file',
       \ }
 
 function! ash_review#ls(url)
@@ -34,8 +34,19 @@ function! ash_review#ls(url)
     return candidates
 endfunction
 
+
 function! s:source.gather_candidates(args, context)
-    let url = unite#util#input('URL: ')
+    let args = unite#helper#parse_project_bang(a:args)
+
+    let url = get(args, 0, '')
+    if url == ''
+        let url = unite#util#input('URL: ')
+    endif
+
+    if url == ''
+        call unite#util#print_error('ash.vim: Invalid url')
+    endif
+
     let candidates = ash_review#ls(url)
 
     return candidates
