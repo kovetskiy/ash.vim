@@ -24,6 +24,8 @@ function! s:kind.action_table.open.func(candidate)
 
     " todo: make this through :call unite#blah#blah()
     execute "autocmd BufDelete " . fileToUse . " !ash " . a:candidate.url . " review " . a:candidate.file . " --input=" . fileToUse
+    execute "autocmd VimLeave * !ash " . a:candidate.url . " review " . a:candidate.file . " --input=" . fileToUse
+
     execute "e " . fileToUse
 endfunction
 
