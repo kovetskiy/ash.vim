@@ -12,17 +12,25 @@ let s:kind = {
       \ }
 
 let s:kind.action_table.open = {
-      \     'description' : 'review this file',
+      \     'description' : 'show that pull request',
       \ }
 
 function! s:kind.action_table.open.func(candidate)
-    let fileToUse = system("ash " . a:candidate.url . " review " . a:candidate.file . " -e ''")
+    execute "Unite ash_review:" . a:candidate.url
+endfunction
+
+
+let s:kind.action_table.ls = {
+      \     'description' : 'list files in the request',
+      \ }
+
+function! s:kind.action_table.ls.func(candidate)
+    let fileToUse = system("ash " . a:candidate.url . " review -e ''")
 
     " todo: make this through :call unite#blah#blah()
-    execute "autocmd BufDelete " . fileToUse . " !ash " . a:candidate.url . " review " . a:candidate.file . " --input=" . fileToUse
+    execute "autocmd BufDelete " . fileToUse . " !ash " . a:candidate.url . " review --input=" . fileToUse
     execute "e " . fileToUse
 endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-

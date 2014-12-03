@@ -10,7 +10,7 @@ let s:source = {
       \     'description' : 'candidates from ash inbox',
       \     'syntax' : '',
       \     'hooks' : {},
-      \     'default_kind' : 'ash_review_request',
+      \     'default_kind' : 'ash_review',
       \ }
 
 function! ash_inbox#get_list()
