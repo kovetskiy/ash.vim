@@ -60,15 +60,6 @@ function! s:kind.action_table.open.func(candidate)
         execute 'buffer ' . l:bufNumber
     else
         let l:inputFile = system("ash " . a:candidate.url . " review " . a:candidate.file . " -e '' " . g:ash_review_file_flags)
-        let l:bufCount = bufnr('$')
-        let l:bufNumber = l:bufCount + 1
-
-        let s:unite_ash_reviews[a:candidate.url][a:candidate.file] = {
-            \ 'bufNumber'   : l:bufNumber,
-            \ 'inputFile'   : l:inputFile,
-            \ 'review'      : a:candidate.url,
-            \ 'file'        : a:candidate.file,
-        \ }
 
         let s:unite_ash_buffers[l:inputFile] = {
             \   'url'   : a:candidate.url,
@@ -78,6 +69,14 @@ function! s:kind.action_table.open.func(candidate)
 
         execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file('" . l:inputFile . "')"
         execute "edit " . l:inputFile
+
+        let l:bufNumber = bufnr('%')
+        let s:unite_ash_reviews[a:candidate.url][a:candidate.file] = {
+            \ 'bufNumber'   : l:bufNumber,
+            \ 'inputFile'   : l:inputFile,
+            \ 'review'      : a:candidate.url,
+            \ 'file'        : a:candidate.file,
+        \ }
     endif
 endfunction
 
