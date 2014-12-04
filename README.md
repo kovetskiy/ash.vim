@@ -2,7 +2,7 @@ Installation
 ============
 
 ```
-Bundle 'SchwarzeSonne/ash.vim'
+Bundle 'kovetskiy/ash.vim'
 ```
 
 Usage
