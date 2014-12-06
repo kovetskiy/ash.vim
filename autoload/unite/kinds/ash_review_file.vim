@@ -84,25 +84,21 @@ function! s:kind.action_table.open.func(candidate)
 endfunction
 
 function! g:ash_airline_section_b()
-    let l:inputFile = expand('%p')
-    if !has_key(s:unite_ash_buffers, l:inputFile)
-        return []
-    endif
-
-    let l:fileData  = s:unite_ash_buffers[l:inputFile]
-
-    return [l:fileData['url']]
+    return [g:ash_get_context_var('url')]
 endfunction
 
 function! g:ash_airline_section_c()
+    return [g:ash_get_context_var('file')]
+endfunction
+
+function! g:ash_get_context_var(name)
     let l:inputFile = expand('%p')
     if !has_key(s:unite_ash_buffers, l:inputFile)
-        return []
+        return ""
     endif
 
     let l:fileData  = s:unite_ash_buffers[l:inputFile]
-
-    return [l:fileData['file']]
+    return l:fileData[a:name]
 endfunction
 
 let &cpo = s:save_cpo
