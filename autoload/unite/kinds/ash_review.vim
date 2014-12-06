@@ -24,6 +24,7 @@ let s:kind.action_table.ls = {
       \     'description' : 'list files in the request',
       \ }
 
+
 function! s:kind.action_table.ls.func(candidate)
     let fileToUse = system("ash " . a:candidate.url . " review -e ''")
 

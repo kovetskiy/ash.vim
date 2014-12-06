@@ -5,6 +5,10 @@ function! unite#sources#ash_inbox#define()
   return s:source
 endfunction
 
+call unite#util#set_default(
+    \    'g:ash_inbox_mode', 'all'
+    \ )
+
 let s:source = {
       \     'name' : 'ash_inbox',
       \     'description' : 'candidates from ash inbox',
@@ -14,7 +18,7 @@ let s:source = {
       \ }
 
 function! ash_inbox#get_list()
-    let plain = system("ash inbox | sed -e \"s/[[:space:]]\+/ /g\"")
+    let plain = system("ash inbox " . g:ash_inbox_mode . " | sed -e \"s/[[:space:]]\+/ /g\"")
     let list = split(plain, "\n")
 
     let candidates = []

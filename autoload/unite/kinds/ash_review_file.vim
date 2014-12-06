@@ -1,6 +1,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let g:ash_review_file_loaded = 1
+
 call unite#util#set_default(
     \    'g:ash_review_file_flags', '-w'
     \ )
@@ -77,9 +79,31 @@ function! s:kind.action_table.open.func(candidate)
             \ 'review'      : a:candidate.url,
             \ 'file'        : a:candidate.file,
         \ }
+
     endif
+endfunction
+
+function! g:ash_airline_section_b()
+    let l:inputFile = expand('%p')
+    if !has_key(s:unite_ash_buffers, l:inputFile)
+        return []
+    endif
+
+    let l:fileData  = s:unite_ash_buffers[l:inputFile]
+
+    return [l:fileData['url']]
+endfunction
+
+function! g:ash_airline_section_c()
+    let l:inputFile = expand('%p')
+    if !has_key(s:unite_ash_buffers, l:inputFile)
+        return []
+    endif
+
+    let l:fileData  = s:unite_ash_buffers[l:inputFile]
+
+    return [l:fileData['file']]
 endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
