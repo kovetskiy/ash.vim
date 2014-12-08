@@ -83,15 +83,15 @@ function! s:kind.action_table.open.func(candidate)
     endif
 endfunction
 
-function! g:ash_airline_section_b()
-    return [g:ash_get_context_var('url')]
+function! Ash_airline_section_b()
+    return [Ash_get_context_var('url')]
 endfunction
 
-function! g:ash_airline_section_c()
-    return [g:ash_get_context_var('file')]
+function! Ash_airline_section_c()
+    return [Ash_get_context_var('file')]
 endfunction
 
-function! g:ash_get_context_var(name)
+function! Ash_get_context_var(name)
     let l:inputFile = expand('%p')
     if !has_key(s:unite_ash_buffers, l:inputFile)
         return ""

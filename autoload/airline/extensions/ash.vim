@@ -2,8 +2,8 @@ function! airline#extensions#ash#apply(...)
     if get(g:, 'ash_review_file_loaded', 0)
         if &ft == 'diff'
             call a:1.add_section('airline_a', ' ash ')
-            call a:1.add_section('airline_b', ' %{get(g:ash_airline_section_b(), "buffer_name", "")} ')
-            call a:1.add_section('airline_c', ' %{get(g:ash_airline_section_c(), "buffer_name", "")} ')
+            call a:1.add_section('airline_b', ' %{get(Ash_airline_section_b(), "buffer_name", "")} ')
+            call a:1.add_section('airline_c', ' %{get(Ash_airline_section_c(), "buffer_name", "")} ')
             call a:1.split()
             return 1
         endif
