@@ -25,11 +25,20 @@ let s:unite_ash_reviews = {}
 let s:unite_ash_buffers = {}
 let s:unite_ash_vimleave_handled = 0
 
+function! s:ash_mark_changed(inputFile)
+    let s:unite_ash_buffers[a:inputFile]['changed'] = 1
+endfunction
+
 function! s:ash_save_changes_single_file(inputFile)
     let l:bufferData = s:unite_ash_buffers[a:inputFile]
-    let l:command = 'ash ' . l:bufferData['url'] . ' review ' . l:bufferData['file'] . ' --input=' . a:inputFile
 
-    execute '!' . l:command
+    let l:changed = l:bufferData["changed"]
+
+    if l:changed
+        let l:command = 'ash ' . l:bufferData['url'] . ' review ' . l:bufferData['file'] . ' --input=' . a:inputFile
+
+        execute '!' . l:command
+    endif
 
     " @todo check for exit status...
     unlet s:unite_ash_buffers[a:inputFile]
@@ -63,16 +72,20 @@ function! s:kind.action_table.open.func(candidate)
     else
         let l:inputFile = system("ash " . a:candidate.url . " review " . a:candidate.file . " -e '' " . g:ash_review_file_flags)
 
-        let s:unite_ash_buffers[l:inputFile] = {
-            \   'url'   : a:candidate.url,
-            \   'file'  : a:candidate.file,
-            \   'input' : l:inputFile,
-        \ }
-
-        execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file('" . l:inputFile . "')"
+        execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file(expand('%'))"
+        execute "autocmd BufWritePost " . l:inputFile . " call s:ash_mark_changed(expand('%'))"
         execute "edit " . l:inputFile
 
         let l:bufNumber = bufnr('%')
+
+        let s:unite_ash_buffers[l:inputFile] = {
+            \ 'bufNumber'   : l:bufNumber,
+            \ 'url'   : a:candidate.url,
+            \ 'file'  : a:candidate.file,
+            \ 'input' : l:inputFile,
+            \ 'changed' : 0,
+        \ }
+
         let s:unite_ash_reviews[a:candidate.url][a:candidate.file] = {
             \ 'bufNumber'   : l:bufNumber,
             \ 'inputFile'   : l:inputFile,
