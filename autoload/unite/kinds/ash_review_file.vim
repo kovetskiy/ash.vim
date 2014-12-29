@@ -72,18 +72,19 @@ function! s:kind.action_table.open.func(candidate)
     else
         let l:inputFile = system("ash " . a:candidate.url . " review " . a:candidate.file . " -e '' " . g:ash_review_file_flags)
 
-        execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file(expand('%'))"
-        execute "autocmd BufWritePost " . l:inputFile . " call s:ash_mark_changed(expand('%'))"
+        execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file('" . l:inputFile . "')"
+        execute "autocmd BufWritePost " . l:inputFile . " call s:ash_mark_changed('" . l:inputFile . "')"
+
         execute "edit " . l:inputFile
 
         let l:bufNumber = bufnr('%')
 
         let s:unite_ash_buffers[l:inputFile] = {
             \ 'bufNumber'   : l:bufNumber,
-            \ 'url'   : a:candidate.url,
-            \ 'file'  : a:candidate.file,
-            \ 'input' : l:inputFile,
-            \ 'changed' : 0,
+            \ 'url'         : a:candidate.url,
+            \ 'file'        : a:candidate.file,
+            \ 'input'       : l:inputFile,
+            \ 'changed'     : 0,
         \ }
 
         let s:unite_ash_reviews[a:candidate.url][a:candidate.file] = {
