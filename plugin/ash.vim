@@ -14,9 +14,6 @@ fun! Ash_apply_diff_syntax()
     syn match DiffRemoved "^-" containedin=ALL
     syn match DiffContext "^ " containedin=ALL
 
-    hi DiffAdded ctermbg=34 ctermfg=27
-    hi DiffRemoved ctermbg=88 ctermfg=146
-    hi DiffContext ctermbg=253 ctermfg=253
     hi DiffCommentIgnore ctermfg=249 ctermbg=none
     hi DiffComment ctermfg=15 ctermbg=237
 endfun
