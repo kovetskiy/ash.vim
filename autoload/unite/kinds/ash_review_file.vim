@@ -30,14 +30,16 @@ function! s:ash_mark_changed(inputFile)
 endfunction
 
 function! s:ash_save_changes_single_file(inputFile)
-    let l:bufferData = s:unite_ash_buffers[a:inputFile]
+    let bufferData = s:unite_ash_buffers[a:inputFile]
 
-    let l:changed = l:bufferData["changed"]
+    let changed = bufferData["changed"]
 
-    if l:changed
-        let l:command = 'ash ' . l:bufferData['url'] . ' review ' . l:bufferData['file'] . ' --input=' . a:inputFile
+    if changed
+        let command = 'ash ' . bufferData['url'] . 
+            \ ' review ' . fnameescape(bufferData['file']) .
+            \ ' --input=' . fnameescape(a:inputFile)
 
-        execute '!' . l:command
+        execute '!' . command
     endif
 
     " @todo check for exit status...
@@ -45,9 +47,9 @@ function! s:ash_save_changes_single_file(inputFile)
 endfunction
 
 function! s:ash_save_changes_all_files()
-    let l:buffers = keys(s:unite_ash_buffers)
-    for l:iBuffer in l:buffers
-        call s:ash_save_changes_single_file(l:iBuffer)
+    let buffers = keys(s:unite_ash_buffers)
+    for iBuffer in buffers
+        call s:ash_save_changes_single_file(iBuffer)
     endfor
 endfunction
 
@@ -55,7 +57,6 @@ function! s:kind.action_table.open.func(candidate)
     if s:unite_ash_vimleave_handled == 0 
         " @todo try make this through 'augroup' and 'au!'
         execute "autocmd VimLeave * call s:ash_save_changes_all_files()"
-        echo "handled!"
 
         let s:unite_ash_vimleave_handled = 1
     endif
@@ -65,31 +66,38 @@ function! s:kind.action_table.open.func(candidate)
     endif
 
     if has_key(s:unite_ash_reviews[a:candidate.url], a:candidate.file)
-        let l:fileData = s:unite_ash_reviews[a:candidate.url][a:candidate.file]
-        let l:bufNumber = l:fileData['bufNumber']
+        let fileData = s:unite_ash_reviews[a:candidate.url][a:candidate.file]
+        let bufNumber = fileData['bufNumber']
 
-        execute 'buffer ' . l:bufNumber
+        execute 'buffer ' . bufNumber
     else
-        let l:inputFile = system("ash " . a:candidate.url . " review " . a:candidate.file . " -e '' " . g:ash_review_file_flags)
+        let command = 'ash ' . a:candidate.url .
+            \ ' review ' . a:candidate.file . ' -e "" ' .
+            \ g:ash_review_file_flags
 
-        execute "autocmd BufDelete " . l:inputFile . " call s:ash_save_changes_single_file('" . l:inputFile . "')"
-        execute "autocmd BufWritePost " . l:inputFile . " call s:ash_mark_changed('" . l:inputFile . "')"
+        let inputFile = system(command)
 
-        execute "edit " . l:inputFile
+        execute "autocmd BufDelete " . fnameescape(inputFile) .
+            \ " call s:ash_save_changes_single_file('" . fnameescape(inputFile) . "')"
 
-        let l:bufNumber = bufnr('%')
+        execute "autocmd BufWritePost " . fnameescape(inputFile) .
+            \ " call s:ash_mark_changed('" . fnameescape(inputFile) . "')"
 
-        let s:unite_ash_buffers[l:inputFile] = {
-            \ 'bufNumber'   : l:bufNumber,
+        execute "edit" inputFile
+
+        let bufNumber = bufnr('%')
+
+        let s:unite_ash_buffers[inputFile] = {
+            \ 'bufNumber'   : bufNumber,
             \ 'url'         : a:candidate.url,
             \ 'file'        : a:candidate.file,
-            \ 'input'       : l:inputFile,
+            \ 'input'       : inputFile,
             \ 'changed'     : 0,
         \ }
 
         let s:unite_ash_reviews[a:candidate.url][a:candidate.file] = {
-            \ 'bufNumber'   : l:bufNumber,
-            \ 'inputFile'   : l:inputFile,
+            \ 'bufNumber'   : bufNumber,
+            \ 'inputFile'   : inputFile,
             \ 'review'      : a:candidate.url,
             \ 'file'        : a:candidate.file,
         \ }
@@ -106,13 +114,14 @@ function! Ash_airline_section_c()
 endfunction
 
 function! Ash_get_context_var(name)
-    let l:inputFile = expand('%p')
-    if !has_key(s:unite_ash_buffers, l:inputFile)
+    let inputFile = expand('%p')
+
+    if !has_key(s:unite_ash_buffers, inputFile)
         return ""
     endif
 
-    let l:fileData  = s:unite_ash_buffers[l:inputFile]
-    return l:fileData[a:name]
+    let fileData  = s:unite_ash_buffers[inputFile]
+    return fileData[a:name]
 endfunction
 
 let &cpo = s:save_cpo

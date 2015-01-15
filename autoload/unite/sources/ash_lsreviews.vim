@@ -17,7 +17,9 @@ function! ash_lsreviews#get_list(url, type)
     let url = a:url
     let type = a:type
 
-    let plain = system("ash " . url . " ls-reviews " . type . " | sed -e \"s/[[:space:]]\+/ /g\"")
+    let plain = system("ash " . url . " ls-reviews " . type .
+        \ " | sed -e \"s/[[:space:]]\+/ /g\"")
+
     let list = split(plain, "\n")
 
     let candidates = []
@@ -40,6 +42,7 @@ function! s:source.gather_candidates(args, context)
     let args = unite#helper#parse_project_bang(a:args)
 
     let url = get(args, 0, '')
+
     if url == ''
         let url = unite#util#input('URL: ')
     endif
@@ -54,11 +57,9 @@ function! s:source.gather_candidates(args, context)
         let type = unite#util#input('Type [(open|merged|declined)]: ')
     endif
 
-    if type != '' 
-        if type != 'open' && type != 'merged' && type != 'declined'
-            call unite#util#print_error('ash.vim: Invalid type')
-            throw 'ash.vim: Invalid type'
-        endif
+    if type != 'open' && type != 'merged' && type != 'declined'
+        call unite#util#print_error('ash.vim: Invalid type')
+        throw 'ash.vim: Invalid type'
     endif
 
     let candidates = ash_lsreviews#get_list(url, type)
@@ -68,4 +69,3 @@ endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
