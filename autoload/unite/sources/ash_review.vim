@@ -36,9 +36,7 @@ endfunction
 
 
 function! s:source.gather_candidates(args, context)
-    let args = unite#helper#parse_project_bang(a:args)
-
-    let url = get(args, 0, '')
+    let url = get(a:args, 0, '')
     if url == ''
         let url = unite#util#input('URL: ')
     endif

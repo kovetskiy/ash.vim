@@ -39,9 +39,8 @@ endfunction
 
 
 function! s:source.gather_candidates(args, context)
-    let args = unite#helper#parse_project_bang(a:args)
-
-    let url = get(args, 0, '')
+    let url = get(a:args, 0, '')
+    let type = get(a:args, 1, '')
 
     if url == ''
         let url = unite#util#input('URL: ')
@@ -52,7 +51,6 @@ function! s:source.gather_candidates(args, context)
         throw 'ash.vim: Invalid url'
     endif
 
-    let type = get(args, 1, '')
     if type == ''
         let type = unite#util#input('Type [(open|merged|declined)]: ')
     endif
