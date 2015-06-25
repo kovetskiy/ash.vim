@@ -4,7 +4,7 @@ endif
 
 let g:loaded_ash = 1
 
-fun! Ash_apply_diff_syntax()
+fun! AshApplyDiffSyntax()
     syn match DiffCommentIgnore "^###.*" containedin=ALL
     syn match DiffComment "^#.*" containedin=ALL
     syn match DiffComment "^---.*" containedin=ALL
@@ -18,17 +18,11 @@ fun! Ash_apply_diff_syntax()
     hi DiffComment ctermfg=15 ctermbg=237
 endfun
 
-augroup ash_syntax_hacks
-    au!
-    au FileType diff set nolist
-    au FileType diff call Ash_apply_diff_syntax()
-augroup end
-
-fun! Ash_experimental_highlightion()
-    let ext=substitute(Ash_get_context_var('file'), '.*\.', '', 'g')
+fun! AshExperimentalHighlighting()
+    let ext=substitute(AshGetContextVar('file'), '.*\.', '', 'g')
     execute 'set ft=' . ext
 
-    call Ash_apply_diff_syntax()
+    call AshApplyDiffSyntax()
 endfun
 
-command! -b AshExperimentalHighglightion call Ash_experimental_highlightion()
+command! -b AshExperimentalHighlighting call AshExperimentalHighlighting()
