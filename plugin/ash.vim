@@ -19,7 +19,7 @@ fun! AshApplyDiffSyntax()
 endfun
 
 fun! AshExperimentalHighlighting()
-    let ext=substitute(AshGetContextVar('file'), '.*\.', '', 'g')
+    let ext = substitute(AshGetContextVar('file'), '.*\.', '', 'g')
     execute 'set ft=' . ext
 
     call AshApplyDiffSyntax()
