@@ -102,18 +102,20 @@ function! s:kind.action_table.open.func(candidate)
             \ 'file'        : a:candidate.file,
         \ }
 
+        doautocmd User UniteAshLoaded
+
     endif
 endfunction
 
 function! Ash_airline_section_b()
-    return [Ash_get_context_var('url')]
+    return [AshGetContextVar('url')]
 endfunction
 
 function! Ash_airline_section_c()
-    return [Ash_get_context_var('file')]
+    return [AshGetContextVar('file')]
 endfunction
 
-function! Ash_get_context_var(name)
+function! AshGetContextVar(name)
     let inputFile = expand('%p')
 
     if !has_key(s:unite_ash_buffers, inputFile)

@@ -8,13 +8,13 @@ Bundle 'kovetskiy/ash.vim'
 Usage
 =====
 
-Inbox:
+## Inbox
 
 ```
 :Unite ash_inbox
 ```
 
-ls-reviews:
+## List reviews
 
 ```
 :Unite ash_lsreviews:repo/project[:type]
@@ -22,7 +22,7 @@ ls-reviews:
 :Unite ash_lsreviews
 ```
 
-review:
+## Review single file
 
 ```
 :Unite ash_review:repo/project/pr
@@ -30,3 +30,8 @@ review:
 :Unite ash_review
 ```
 
+## Automatic highlighting
+
+```viml
+au User UniteAshLoaded call AshExperimentalHighlighing()
+```
