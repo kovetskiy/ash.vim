@@ -102,7 +102,7 @@ function! s:kind.action_table.open.func(candidate)
             \ 'file'        : a:candidate.file,
         \ }
 
-        doautocmd User UniteAshLoaded
+        silent "doautocmd User UniteAshLoaded"
 
     endif
 endfunction
